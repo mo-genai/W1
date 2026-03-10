@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ما تراه ليس حربًا</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f9f6f0;
+      --fg: #1a1a18;
+      --accent: #1a1a18;
+      --rule: #c8c0b0;
+      --muted: #6b6355;
+      --blockquote-border: #1a1a18;
+    }
+
+    .dark {
+      --bg: #0e0e0c;
+      --fg: #ede8df;
+      --accent: #ede8df;
+      --rule: #2e2e2a;
+      --muted: #8a8278;
+      --blockquote-border: #ede8df;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html {
+      font-size: 18px;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: 'Amiri', serif;
+      transition: background-color 0.4s ease, color 0.4s ease;
+      min-height: 100vh;
+    }
+
+    /* ── Toggle Button ── */
+    #theme-toggle {
+      position: fixed;
+      top: 2rem;
+      left: 1.8rem;
+      width: 2.4rem;
+      height: 2.4rem;
+      border: 1px solid var(--rule);
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.3s, opacity 0.3s;
+      z-index: 100;
+      padding: 0;
+    }
+
+    #theme-toggle:hover { opacity: 0.6; }
+
+    #theme-toggle svg {
+      width: 1.1rem;
+      height: 1.1rem;
+      fill: var(--fg);
+      transition: fill 0.4s ease;
+    }
+
+    /* ── Layout ── */
+    main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 8rem 2rem 10rem;
+    }
+
+    /* ── Header ── */
+    header {
+      margin-bottom: 4rem;
+      border-top: 1px solid var(--rule);
+      padding-top: 3rem;
+    }
+
+    .site-label {
+      font-family: 'EB Garamond', serif;
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      display: block;
+    }
+
+    h1 {
+      font-family: 'Amiri', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+      color: var(--fg);
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-family: 'Amiri', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .date {
+      font-family: 'EB Garamond', serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Diamond separator ── */
+    .diamond {
+      display: block;
+      text-align: center;
+      color: var(--rule);
+      font-size: 1rem;
+      margin: 2.5rem 0;
+      letter-spacing: 0.3em;
+      user-select: none;
+    }
+
+    /* ── Sections ── */
+    section {
+      margin-bottom: 0;
+    }
+
+    h2 {
+      font-family: 'Amiri', serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 1.25rem;
+      line-height: 1.4;
+    }
+
+    p {
+      font-size: 1.08rem;
+      line-height: 1.95;
+      color: var(--fg);
+      margin-bottom: 1.1rem;
+    }
+
+    p:last-child { margin-bottom: 0; }
+
+    /* ── Blockquote ── */
+    blockquote {
+      margin: 2rem 0;
+      padding-right: 1.5rem;
+      border-right: 2px solid var(--blockquote-border);
+    }
+
+    blockquote p {
+      font-style: italic;
+      font-size: 1.05rem;
+      color: var(--fg);
+      line-height: 1.9;
+    }
+
+    /* ── Sub-sections inside numbered sections ── */
+    .sub-heading {
+      font-family: 'Amiri', serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--fg);
+      margin-top: 1.6rem;
+      margin-bottom: 0.6rem;
+    }
+
+    /* ── Rule ── */
+    hr.section-rule {
+      border: none;
+      border-top: 1px solid var(--rule);
+      margin: 3.5rem 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 6rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .byline {
+      font-family: 'EB Garamond', serif;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-style: italic;
+      letter-spacing: 0.03em;
+    }
+
+    .footer-date {
+      font-family: 'EB Garamond', serif;
+      font-size: 0.8rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 520px) {
+      html { font-size: 16px; }
+      main { padding: 6rem 1.4rem 8rem; }
+      h1 { font-size: 2rem; }
+      #theme-toggle { top: 1.4rem; left: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <button id="theme-toggle" aria-label="تبديل المظهر">
+    <!-- Moon icon (shown in light mode) -->
+    <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+    <!-- Sun icon (shown in dark mode, hidden initially) -->
+    <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display:none;">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </button>
+
+  <main>
+
+    <header>
+      <span class="site-label">Essay — March 2026</span>
+      <h1>ما تراه ليس حربًا</h1>
+      <p class="subtitle">قراءة في بنية القوة العالمية وانتقال الشرق الأوسط</p>
+      <p class="date">مارس ٢٠٢٦</p>
+    </header>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>١. السؤال الخاطئ</h2>
+      <p>الجميع يسأل: من سيربح؟</p>
+      <p>هذا السؤال يفترض حربًا بالمعنى التقليدي. ضربات تُوجَّه لتحقيق نصر، خسائر تُقاس بالأرض والأرواح، طرف يركع في النهاية.</p>
+      <p>ما يجري في الشرق الأوسط منذ أكتوبر ٢٠٢٣ يعمل بمنطق مختلف. الضربات حقيقية. الدماء حقيقية. الهدف منها إدارة انتقال منظومة، لا حسم عسكري.</p>
+      <p>السؤال الصحيح: من يبني النظام الذي سيأتي بعد أن تهدأ الصواريخ؟</p>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>٢. القطاع الخاص العابر للحدود</h2>
+      <p>أمريكا التي يعرفها العالم، منارة الديمقراطية وحامية القانون الدولي، هي الواجهة. ما خلفها مختلف.</p>
+      <p>نشأ على مر العقود كيان يتجاوز الدول ويتحرك فوق حدودها. يُعرف بالـ TPS، القطاع الخاص العابر للحدود. ائتلاف من الشركات العملاقة تعمل بمنطق الربح دون أي التزام بمجتمع أو شعب.</p>
+      <p>يتكون من أربعة أجنحة:</p>
+      <p><strong>الجناح المالي (FIC):</strong> البنوك وصناديق الاستثمار الكبرى — JPMorgan، Goldman Sachs، BlackRock. يجلس في قمة البنية ويحرك بقية الأجنحة.</p>
+      <p><strong>الجناح العسكري (MIC):</strong> شركات السلاح كـ Lockheed وRaytheon. يربح من الحروب الطويلة وعقود التسليح.</p>
+      <p><strong>الجناح الاستهلاكي (CIC):</strong> من Walmart إلى Pfizer. السيطرة على السلع والخدمات اليومية عالميًا.</p>
+      <p><strong>الجناح التقني (TIC):</strong> Apple، Amazon، Microsoft، Nvidia. يملك البنية الرقمية التي يعيش عليها العالم.</p>
+      <blockquote>
+        <p>الولايات المتحدة في هذا الإطار منصة تخدم هذه البنية. ليست دولة تقود، بل أداة تُوجَّه. والمواطن الأمريكي العادي يدفع الفاتورة.</p>
+      </blockquote>
+      <p>الـ TPS يدين بالولاء لحاملي الأسهم فقط. القرار فيه يُقاس بالعائد، لا بالشرعية أو المصلحة العامة.</p>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>٣. لعبتان في ساحة واحدة</h2>
+      <p>الدول تلعب على المدى البعيد. هدفها البقاء والاستمرار عبر الأجيال. مبادرة الحزام والطريق الصينية مثال: استثمار تريليون دولار على عقود، لأن الصين تفكر بأفق لا نهاية له. BRICS بُني على المنطق ذاته: تعاون طويل الأمد لأن البقاء يتطلب الشراكة.</p>
+      <p>الـ TPS يلعب على المدى القصير. أرباح فصلية، أهداف محددة، فائز وخاسر في كل جولة. الحرب مربحة؟ يموّلها. السلام أعلى عائدًا؟ ينتقل إليه. لا رابطة بالمدى البعيد.</p>
+      <blockquote>
+        <p>حين يدخل لاعب بقواعد اللعبة القصيرة إلى ساحة اللعبة الطويلة، تنقلب اللوحة. هذا ما فعله الـ TPS في الشرق الأوسط لأكثر من مئة عام.</p>
+      </blockquote>
+      <p>الدول ترفض هذا الخلل لأنه يهدد بقاءها. BRICS نفسه تحالف دول تريد استعادة ساحتها من منطق الشركات.</p>
+      <p>الشرق الأوسط وصل إلى نقطة حرجة. رهانات الطاقة والممرات التجارية والاستقرار أصبحت أكبر من أن تُترك للـ MIC. القرار الإقليمي صار إعادة ضبط اللوحة.</p>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>٤. اللاعبون الأربعة</h2>
+      <p>قبل أكتوبر ٢٠٢٣، أربعة أطراف تُحرك المنطقة، كل منها يتبع حسابه الخاص.</p>
+
+      <p class="sub-heading">إيران</p>
+      <p>أولوياتها كانت ثلاثية: بقاء النظام، رفع العقوبات، توسيع النفوذ عبر شبكة أذرع مسلحة في لبنان والعراق واليمن وفلسطين. الطموح النووي ورقة ضغط احتياطية. هذه المنظومة كلها أصبحت تكلف أكثر مما تعطي: عقوبات خانقة، عزلة متصاعدة، وأذرع تجلب الضربات أكثر مما تجلب النفوذ.</p>
+
+      <p class="sub-heading">إسرائيل</p>
+      <p>بنت مشروعيتها الداخلية على معادلة: التهديد الإيراني يضمن الدعم الأمريكي، والدعم الأمريكي يغطي التوسع. حكومة نتنياهو أرادت المضي بهذه المعادلة حتى نهايتها: التهجير الكامل وضم غزة. فشلت.</p>
+
+      <p class="sub-heading">الخليج</p>
+      <p>السعودية وشركاؤها يلعبون لعبة طويلة. استقرار سوق الطاقة، نفوذ إقليمي يتناسب مع ثقلهم المالي المتصاعد، وتموضع في عالم متعدد الأقطاب دون انحياز كامل لأي طرف. صعود BRICS فتح أمامهم خيارات لم تكن متاحة.</p>
+
+      <p class="sub-heading">الـ TPS</p>
+      <p>ما بعد الحرب العالمية الثانية كان الـ MIC يقود. كل حرب، كل عقد سلاح، يصب في خزينة تجار الأسلحة. الحروب الطويلة في العراق وأفغانستان استنزفت الولايات المتحدة كمنصة. الـ FIC رأى ما غاب عن الـ MIC: أرباح الإعمار والاستثمار في المناطق المستقرة أضخم وأطول عمرًا.</p>
+      <blockquote>
+        <p>الـ FIC انتزع قيادة الـ TPS من الـ MIC. الاستقرار أكثر ربحية من الحرب. هذا التحول يفسر كل ما جاء بعده.</p>
+      </blockquote>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>٥. ثلاثية الـ FIC</h2>
+      <p>حين أمسك الـ FIC بقيادة الـ TPS، شرع في تنفيذ ثلاث حركات متزامنة:</p>
+      <p><strong>الدمج الداخلي:</strong> الشركات الصغيرة التي أنهكتها التعريفات الجمركية تُشترى بأسعار متدنية وتُضم إلى منظومة الـ TPS. السوق يتركّز في يد أقل.</p>
+      <p><strong>التبعية:</strong> الدول المثقلة بالديون تحصل على قروض واستثمارات مشروطة تحوّلها إلى محطات خدمة. السيادة تتآكل ببطء.</p>
+      <p><strong>الاصطفاف مع BRICS:</strong> الـ TPS لا يقاوم النظام الجديد، بل يخترقه. استثمارات في اقتصادات BRICS، شراكات خليجية، حضور في كل الأنظمة في وقت واحد.</p>
+      <p>الـ FIC يهدد بـ MIC ليحسّن شروطه في التفاوض، ثم يتفاهم مع الجميع. الوفاء والخيانة أدوات يستخدمها حسب الحاجة.</p>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>٦. الصفقة السعودية-الإيرانية ٢٠٢٣</h2>
+      <p>عام ٢٠٢٣، برعاية صينية، وقّعت السعودية وإيران اتفاق تطبيع. أغلب المحللين تعاملوا معه كخبر دبلوماسي. كان أكبر من ذلك بكثير.</p>
+      <p>الخليج يعطي إيران منفذًا تجاريًا وإدماجًا اقتصاديًا تدريجيًا ووساطة دولية لرفع العقوبات. إيران تتخلى عن شبكة أذرعها وتسمح لها بالنزف حتى التلاشي.</p>
+      <p>خامنئي وافق.</p>
+      <blockquote>
+        <p>الأذرع المسلحة لم تعد أصولًا استراتيجية في الحساب الإيراني الجديد. باتت أعباء تُفاوَض عليها.</p>
+      </blockquote>
+      <p>العائد على كل طرف: إيران تضمن بقاءها وتخرج من العزلة. الخليج يروّض منافسًا تاريخيًا ويعزز سيطرته على سوق الطاقة. الـ FIC يحصل على منطقة قابلة للاستثمار وممرات تجارية مفتوحة.</p>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>٧. التفكيك الذاتي</h2>
+      <p>منذ اغتيال قاسم سليماني في ٢٠٢٠، تسارعت وتيرة الانفصال بين الدولة الإيرانية ووكلائها.</p>
+      <p>قيادات المحور تُصفَّى واحدة تلو الأخرى. قيادات حزب الله. قادة في الحرس الثوري. ثم الخامنئي نفسه.</p>
+      <p>الرواية الشائعة أن إسرائيل تنجح في استهداف القيادات الإيرانية. لكن إيران دولة أمنية محترفة. حين تترك قياداتها مكشوفة بهذا الشكل المتواصل، هذا قرار.</p>
+      <blockquote>
+        <p>إيران سهّلت التخلص من كل عقبة أمام التحول. سليماني. قيادات حزب الله. رئيسي. المتشددون في الحرس الثوري. الخامنئي. كل واحد منهم كان يمثل ثقلًا على الصفقة الكبرى.</p>
+      </blockquote>
+      <p>من رأى في هذا هزيمة كان يراقب الشكل. ما جرى فعليًا كان تفكيكًا ذاتيًا مُدارًا. الفرق بين الهزيمة والتخلص الاختياري من عبء أصبح غير قابل للتحمل.</p>
+      <p>من يدير إيران اليوم هم أنفسهم من كانوا في جنيف يعرضون تنازلات نووية دائمة. هذا ليس تزامنًا عرضيًا.</p>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>٨. المسرح</h2>
+      <p>إيران وإسرائيل عدوتان. هذا حقيقي. لكنه لا يمنع أن تخدم ردود أفعالهما المتبادلة أهدافًا مشتركة في الوقت ذاته.</p>
+      <p>قارن هذه «الحرب» بأوكرانيا: مئات الآلاف من القتلى، مدن مسوّاة بالأرض، أسواق في فوضى لسنتين.</p>
+      <p>ثم انظر إلى هذه «الحرب»: النفط عند ٧٣ دولارًا يوم إعلانها. اجتماع OPEC+ في الصباح التالي بزيادات عرض معدّة مسبقًا. السعودية محمية كليًا. عُمان، الوسيط، غير ممسوسة. فنزويلا أمّنت نفطها قبل شهرين. عراقجي على شاشة أمريكية يعرض التهدئة ويقول إن خسارة القادة «ليست مشكلة كبيرة».</p>
+      <blockquote>
+        <p>عملية هدم محكوم ألبست زي حرب. عملية نهاية أسبوع لإعادة هيكلة بنية القوة في المنطقة بينما الجميع منشغل بمشاهد الصواريخ.</p>
+      </blockquote>
+
+      <p class="sub-heading">خامنئي</p>
+      <p>وافق على الصفقة مع الخليج. لكنه يحكم دولة بنى مشروعيتها على خطاب المحور والثورة. قاعدته الصلبة تحتاج مشهدًا. الضربة التي تبدو كردٍّ حازم ترضي هذه القاعدة بينما تسير الترتيبات في الكواليس.</p>
+
+      <p class="sub-heading">نتنياهو</p>
+      <p>ائتلافه ينهار، القضاء يلاحقه، وهدفه في غزة فشل. ضربة تقدَّم إعلاميًا بأنها حيّدت البرنامج النووي تمنحه مخرجًا بطوليًا. يحتاج إيران أن تردّ. وإيران تحتاج مشهدًا يرضي متشدديها. مصلحتاهما تلتقيان في الأداء.</p>
+      <p>اللاعبان الأكثر قوة، الخليج والـ FIC، يمتلكان سلّم التصعيد ويضبطانه. التنسيق بينهما نابع من ضرورة مشتركة: الصفقة الكبرى يجب أن تنجح.</p>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>٩. هرمز</h2>
+      <p>في ذروة التوتر، أغلقت إيران مضيق هرمز جزئيًا.</p>
+      <p>النفط قفز إلى ١١٩ دولارًا. هذا الرقم كان سؤالًا موجهًا لكل لاعب كبير في الاقتصاد العالمي: كم تساوي التهدئة؟ العالم لا يتحمل هذا السعر أسابيع. الرسالة وصلت.</p>
+      <p>التهدئة بدأت. النفط هبط.</p>
+      <blockquote>
+        <p>هرمز في هذه اللحظة كان لغة تفاوض مالية. من يهدده يخاطب السوق العالمية والدول الصناعية وشبكات رأس المال الكبرى كلها في آنٍ واحد.</p>
+      </blockquote>
+      <p>هذه الأداة استُخدمت مرة واحدة في اللحظة الصحيحة. أدّت وظيفتها: تسريع التسوية.</p>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>١٠. الصين في الصورة</h2>
+      <p>حين أطلق ترامب تغريدته الشهيرة عن هرمز، خاطب الصين بالاسم وسمّى الضمان الأمريكي للمضيق «هدية» لها. أغلب من قرأها فهمها كتهديد لإيران.</p>
+      <p>كانت عرضًا تجاريًا موجهًا لبكين.</p>
+      <p>الصين تستورد نحو ٧٠٪ من نفطها عبر هرمز. ترامب كان يقول: «نحن نضمن طاقتك. هذه هدية. ماذا تقدم مقابلها؟»</p>
+      <p>الأوراق المطروحة أمام الصين ثلاث:</p>
+      <p><strong>التعريفات الجمركية:</strong> «نحمي نفطك، التقِ بنا في منتصف الطريق على الميزان التجاري.»</p>
+      <p><strong>تايوان:</strong> الأصول العسكرية الأمريكية مركّزة في الخليج. هذه نافذة ضعف حقيقية. الصين تعرف. واشنطن تعرف أن الصين تعرف. الالتزام بعدم التصعيد خلال هذه الفترة له ثمن.</p>
+      <p><strong>الاتفاق الإيراني:</strong> أي تسوية تتطلب من الصين وقف تمويل تحايل طهران على العقوبات. الصين كانت طوق نجاة إيران الاقتصادي. إغلاق هذا المنفذ جزء من الترتيب الكبير.</p>
+      <blockquote>
+        <p>ما بدا صراعًا إقليميًا كان في جوهره إعادة ترتيب للعلاقة الأمريكية-الصينية باستخدام أدوات شرق أوسطية.</p>
+      </blockquote>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>١١. ما تأكد</h2>
+      <p>القراءة كانت سيناريو في ٢٠٢٥. الأحداث التي جاءت بعدها حوّلته إلى توثيق.</p>
+
+      <p class="sub-heading">وفاة خامنئي وتعيين مجتبى</p>
+      <p>المجلس المؤقت تشكّل فورًا: بيزشكيان الإصلاحي، ومحسني للقضاء، وعرافي للأيديولوجيا. ثلاثة كراسٍ، كلها ممتلئة، صفر فراغ. الدولة لم تتوقف لحظة.</p>
+      <p>الخليفة المرتقب مجتبى ينتمي للجناح البراغماتي. السوق أجاب فورًا حين أُعلن عنه: النفط هبط من ١١٩ إلى ٨٧ دولارًا. السوق يقرأ المخاطر. حين عرف من سيدير إيران، قرر أن المخاطرة انتهت.</p>
+
+      <p class="sub-heading">اعتذار بيزشكيان</p>
+      <p>ضمانة علنية موجهة للعالم. إيران الجديدة تعتذر وتدخل في منطق الدولة الطبيعية. الاتفاقيات ستُحترم.</p>
+
+      <p class="sub-heading">ترامب: «الحرب اكتملت»</p>
+      <p>جملة واحدة أعلنت نجاح الصفقة. ترامب رجل عقارات قبل أن يكون سياسيًا. «اكتملت» تعني: الشروط اتُّفق عليها، الملف أُغلق، المرحلة التالية تبدأ.</p>
+      <p>الصواريخ كانت تطير. العقود كانت تُوقَّع.</p>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>١٢. الشكل الجديد للمنطقة</h2>
+
+      <p class="sub-heading">إيران</p>
+      <p>دولة فارسية تدير مصالحها. الخطاب الثوري يتراجع، الحرس الثوري يعاد هيكلته، الجناح الدبلوماسي يتقدم. عقوبات مرفوعة تدريجيًا، ونفط إيراني يعود للأسواق العالمية.</p>
+
+      <p class="sub-heading">إسرائيل</p>
+      <p>إسرائيل التي عاشت على التهديد الإيراني لتبرير وضعها الاستثنائي وجدت أن هذا المبرر أُزيل. الحكومة التي ستخلف نتنياهو ستواجه واقعًا مختلفًا: دعم أمريكي مشروط وضغط للاندماج في الترتيبات الإقليمية الجديدة.</p>
+
+      <p class="sub-heading">الخليج</p>
+      <p>تحوّل من مموّل صامت تحت المظلة الأمريكية إلى مهندس إقليمي يرسم قواعد اللعبة. IMEC، شراكات الطاقة، مراكز التمويل، كلها تمر عبر الأجندة الخليجية. رؤية ٢٠٣٠ السعودية تحتاج منطقة مستقرة، وهذه المنطقة صارت متاحة.</p>
+
+      <p class="sub-heading">فلسطين</p>
+      <p>مشروع «فلسطين الناشئة» تخططه شركات استشارية كبرى وتموله صناديق استثمار ضخمة. البقاء على الأرض وإعادة البناء في ظل نظام تبعية. لا يختلف كثيرًا عما تواجهه أغلب دول العالم الصغيرة في هذا النظام.</p>
+
+      <p class="sub-heading">أمريكا</p>
+      <p>الهدف إغلاق ملف الشرق الأوسط العسكري والتفرغ للمواجهة مع الصين. ضمان أمن الممرات تحوّل من التزام أوتوماتيكي إلى خدمة مدفوعة.</p>
+
+      <p class="sub-heading">أفريقيا</p>
+      <p>المنطق ذاته سيتكرر. الاستنزاف العسكري، صعود القوى الإقليمية، BRICS كمنصة بديلة. اللوحة ستعاد رسمها بنفس الآليات.</p>
+    </section>
+
+    <span class="diamond">◆</span>
+
+    <section>
+      <h2>١٣. الخلاصة</h2>
+      <p>المال لم يتوقف. غيّر اتجاهه فقط.</p>
+      <p>صناعة الدفاع انتقلت من بيع صواريخ إلى بيع عقود إعمار. الخليج ضخّ استثماراته في منطقته. إيران دخلت كشريك طاقة في منظومة إقليمية. وإسرائيل حصلت على صورة نصر.</p>
+      <p>الخاسرون الوحيدون هم من صدّقوا الشعارات: الميليشيات التي قضت تحت عنوان المقاومة، والشعوب التي رهنت مستقبلها على خطاب ثوري كان في كل لحظة يُدار كبيزنس.</p>
+      <blockquote>
+        <p>الحرب كانت الإعلان. النظام الجديد هو المنتج.</p>
+      </blockquote>
+      <p>هذا الإطار قراءة تتبع المصالح والحوافز، لا الأيديولوجيا والخطابات. الأمور يمكن أن تخرج عن السيطرة في أي لحظة. لكن من يقرأ الأنماط لا الأخبار يرى صورة لا تظهر على شاشات التلفزيون.</p>
+    </section>
+
+    <span class="diamond">◆ ◆ ◆</span>
+
+    <footer>
+      <span class="byline">Compiled and Adapted by Mohammed Al-Otaibi</span>
+      <span class="footer-date">March 2026</span>
+    </footer>
+
+  </main>
+
+  <script>
+    const toggle = document.getElementById('theme-toggle');
+    const iconMoon = document.getElementById('icon-moon');
+    const iconSun = document.getElementById('icon-sun');
+    let dark = false;
+
+    toggle.addEventListener('click', () => {
+      dark = !dark;
+      document.body.classList.toggle('dark', dark);
+      iconMoon.style.display = dark ? 'none' : 'block';
+      iconSun.style.display = dark ? 'block' : 'none';
+    });
+  </script>
+</body>
+</html>
