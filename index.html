@@ -6,239 +6,341 @@
   <title>ما تراه ليس حربًا</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=EB+Garamond:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f9f6f0;
-      --fg: #1a1a18;
-      --accent: #1a1a18;
-      --rule: #c8c0b0;
+      --bg: #f8f5ef;
+      --fg: #1c1c1a;
       --muted: #6b6355;
-      --blockquote-border: #1a1a18;
+      --rule: #d4cdc0;
+      --blockquote-bg: #f0ece3;
+      --blockquote-border: #b0a898;
+      --gloss-bg: #eeeae0;
+      --gloss-border: #c4bdb0;
+      --search-bg: #ffffff;
+      --search-border: #d4cdc0;
+      --toggle-track: #c4bdb0;
+      --toggle-active: #1c1c1a;
+      --highlight: #e2d9c0;
+      --topbar-bg: #f8f5ef;
+      --modal-overlay: rgba(28, 28, 26, 0.55);
     }
-
     .dark {
-      --bg: #0e0e0c;
-      --fg: #ede8df;
-      --accent: #ede8df;
-      --rule: #2e2e2a;
+      --bg: #0f0f0d;
+      --fg: #e8e3d8;
       --muted: #8a8278;
-      --blockquote-border: #ede8df;
+      --rule: #2a2a26;
+      --blockquote-bg: #161612;
+      --blockquote-border: #3a3a34;
+      --gloss-bg: #141410;
+      --gloss-border: #2e2e28;
+      --search-bg: #1a1a16;
+      --search-border: #2e2e28;
+      --toggle-track: #3a3a34;
+      --toggle-active: #e8e3d8;
+      --highlight: #2e2e22;
+      --topbar-bg: #0f0f0d;
+      --modal-overlay: rgba(0, 0, 0, 0.7);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html {
-      font-size: 18px;
-      scroll-behavior: smooth;
-    }
+    html { font-size: 17px; scroll-behavior: smooth; }
 
     body {
       background-color: var(--bg);
       color: var(--fg);
-      font-family: 'Amiri', serif;
-      transition: background-color 0.4s ease, color 0.4s ease;
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
+      font-weight: 400;
+      transition: background-color 0.35s, color 0.35s;
       min-height: 100vh;
     }
 
-    /* ── Toggle Button ── */
-    #theme-toggle {
-      position: fixed;
-      top: 2rem;
-      left: 1.8rem;
+    #topbar {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background-color: var(--topbar-bg);
+      border-bottom: 1px solid var(--rule);
+      padding: 0.7rem 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      transition: background-color 0.35s, border-color 0.35s;
+    }
+
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-shrink: 0;
+      cursor: pointer;
+      user-select: none;
+    }
+    .toggle-label {
+      font-size: 0.76rem;
+      color: var(--muted);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+    .toggle-track {
       width: 2.4rem;
-      height: 2.4rem;
+      height: 1.3rem;
+      border-radius: 999px;
+      background-color: var(--toggle-track);
+      position: relative;
+      transition: background-color 0.3s;
+      flex-shrink: 0;
+    }
+    .toggle-track.on { background-color: var(--toggle-active); }
+    .toggle-thumb {
+      position: absolute;
+      top: 0.15rem;
+      right: 0.15rem;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background: var(--bg);
+      transition: transform 0.3s, background 0.35s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+    }
+    .dark .toggle-thumb { background: #1c1c1a; }
+    .toggle-track.on .toggle-thumb { transform: translateX(-1.1rem); }
+
+    .search-wrap { flex: 1; max-width: 320px; }
+    #search-input {
+      width: 100%;
+      padding: 0.38rem 0.8rem;
+      background: var(--search-bg);
+      border: 1px solid var(--search-border);
+      color: var(--fg);
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      outline: none;
+      direction: rtl;
+      transition: border-color 0.2s, background 0.35s;
+    }
+    #search-input::placeholder { color: var(--muted); }
+    #search-input:focus { border-color: var(--muted); }
+    #search-count { font-size: 0.7rem; color: var(--muted); padding: 0.2rem 0.1rem 0; min-height: 1em; }
+
+    .gloss-btn {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.35rem 0.75rem;
+      background: transparent;
       border: 1px solid var(--rule);
+      color: var(--muted);
+      font-family: 'IBM Plex Sans Arabic', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
+      margin-right: auto;
+    }
+    .gloss-btn:hover { border-color: var(--muted); color: var(--fg); }
+    .gloss-btn.active { background: var(--gloss-bg); border-color: var(--gloss-border); color: var(--fg); }
+    .gloss-btn svg {
+      width: 13px; height: 13px;
+      fill: none; stroke: currentColor;
+      stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .glossary-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: var(--modal-overlay);
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+      animation: fadeIn 0.2s ease;
+    }
+    .glossary-overlay.open { display: flex; align-items: flex-end; justify-content: center; }
+
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideUp {
+      from { transform: translateY(24px); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+
+    .glossary-modal {
+      background: var(--gloss-bg);
+      border: 1px solid var(--gloss-border);
+      border-bottom: none;
+      border-radius: 12px 12px 0 0;
+      padding: 1.4rem 1.8rem 2rem;
+      width: 100%;
+      max-width: 700px;
+      animation: slideUp 0.25s ease;
+      transition: background 0.35s;
+    }
+    .glossary-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.1rem;
+    }
+    .glossary-modal-title {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .gloss-close {
+      width: 1.7rem; height: 1.7rem;
+      border-radius: 50%;
+      border: 1px solid var(--gloss-border);
       background: transparent;
       cursor: pointer;
+      color: var(--muted);
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: border-color 0.3s, opacity 0.3s;
-      z-index: 100;
-      padding: 0;
+      transition: background 0.2s, color 0.2s;
+      font-size: 1rem;
+      line-height: 1;
     }
+    .gloss-close:hover { background: var(--rule); color: var(--fg); }
 
-    #theme-toggle:hover { opacity: 0.6; }
-
-    #theme-toggle svg {
-      width: 1.1rem;
-      height: 1.1rem;
-      fill: var(--fg);
-      transition: fill 0.4s ease;
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 0.5rem 1.5rem;
     }
-
-    /* ── Layout ── */
-    main {
-      max-width: 640px;
-      margin: 0 auto;
-      padding: 8rem 2rem 10rem;
+    .glossary-row {
+      display: grid;
+      grid-template-columns: 3.4rem 1fr;
+      gap: 0 0.7rem;
+      align-items: baseline;
+      font-size: 0.83rem;
+      line-height: 1.5;
     }
+    .g-abbr { font-family: 'EB Garamond', serif; font-size: 0.95rem; font-weight: 700; color: var(--fg); letter-spacing: 0.04em; }
+    .g-def { color: var(--fg); }
+    .g-en { display: block; font-family: 'EB Garamond', serif; font-style: italic; font-size: 0.77rem; color: var(--muted); }
 
-    /* ── Header ── */
-    header {
-      margin-bottom: 4rem;
-      border-top: 1px solid var(--rule);
-      padding-top: 3rem;
-    }
+    mark.search-hit { background: var(--highlight); color: var(--fg); border-radius: 2px; padding: 0 1px; }
+    mark.search-hit.current { outline: 1px solid var(--muted); }
 
+    main { max-width: 660px; margin: 0 auto; padding: 4.5rem 2rem 10rem; }
+
+    header { margin-bottom: 3rem; }
     .site-label {
       font-family: 'EB Garamond', serif;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 2.5rem;
       display: block;
+      margin-bottom: 1.8rem;
     }
+    h1 { font-size: 2.2rem; font-weight: 700; line-height: 1.3; margin-bottom: 0.8rem; }
+    .subtitle { font-size: 1rem; font-weight: 300; color: var(--muted); line-height: 1.7; margin-bottom: 0.4rem; }
+    .date { font-family: 'EB Garamond', serif; font-size: 0.82rem; color: var(--muted); }
 
-    h1 {
-      font-family: 'Amiri', serif;
-      font-size: 2.5rem;
-      font-weight: 700;
-      line-height: 1.25;
-      letter-spacing: -0.01em;
-      color: var(--fg);
-      margin-bottom: 1rem;
-    }
+    hr.divider { border: none; border-top: 1px solid var(--rule); margin: 2.6rem 0; }
 
-    .subtitle {
-      font-family: 'Amiri', serif;
-      font-style: italic;
-      font-size: 1.15rem;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 0.5rem;
-    }
-
-    .date {
-      font-family: 'EB Garamond', serif;
-      font-size: 0.85rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-
-    /* ── Diamond separator ── */
-    .diamond {
-      display: block;
-      text-align: center;
-      color: var(--rule);
-      font-size: 1rem;
-      margin: 2.5rem 0;
-      letter-spacing: 0.3em;
-      user-select: none;
-    }
-
-    /* ── Sections ── */
-    section {
-      margin-bottom: 0;
-    }
-
-    h2 {
-      font-family: 'Amiri', serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--fg);
-      margin-bottom: 1.25rem;
-      line-height: 1.4;
-    }
-
-    p {
-      font-size: 1.08rem;
-      line-height: 1.95;
-      color: var(--fg);
-      margin-bottom: 1.1rem;
-    }
-
+    section { margin-bottom: 0; }
+    h2 { font-size: 1.05rem; font-weight: 600; margin-bottom: 1.2rem; line-height: 1.55; }
+    p { font-size: 0.98rem; line-height: 2; margin-bottom: 1rem; }
     p:last-child { margin-bottom: 0; }
+    strong { font-weight: 600; }
 
-    /* ── Blockquote ── */
     blockquote {
-      margin: 2rem 0;
-      padding-right: 1.5rem;
-      border-right: 2px solid var(--blockquote-border);
+      margin: 1.8rem 0;
+      padding: 1rem 1.3rem;
+      background: var(--blockquote-bg);
+      border-right: 3px solid var(--blockquote-border);
+      border-radius: 0 4px 4px 0;
+      transition: background 0.35s, border-color 0.35s;
     }
+    blockquote p { font-size: 0.95rem; line-height: 1.85; margin-bottom: 0; }
 
-    blockquote p {
-      font-style: italic;
-      font-size: 1.05rem;
-      color: var(--fg);
-      line-height: 1.9;
-    }
+    .sub-heading { font-weight: 600; font-size: 0.93rem; margin-top: 1.5rem; margin-bottom: 0.45rem; }
 
-    /* ── Sub-sections inside numbered sections ── */
-    .sub-heading {
-      font-family: 'Amiri', serif;
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--fg);
-      margin-top: 1.6rem;
-      margin-bottom: 0.6rem;
-    }
-
-    /* ── Rule ── */
-    hr.section-rule {
-      border: none;
-      border-top: 1px solid var(--rule);
-      margin: 3.5rem 0;
-    }
-
-    /* ── Footer ── */
     footer {
-      margin-top: 6rem;
-      padding-top: 2rem;
+      margin-top: 5rem;
+      padding-top: 1.5rem;
       border-top: 1px solid var(--rule);
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
+    .byline { font-family: 'EB Garamond', serif; font-size: 0.85rem; color: var(--muted); font-style: italic; }
+    .footer-date { font-family: 'EB Garamond', serif; font-size: 0.8rem; color: var(--muted); }
 
-    .byline {
-      font-family: 'EB Garamond', serif;
-      font-size: 0.85rem;
-      color: var(--muted);
-      font-style: italic;
-      letter-spacing: 0.03em;
-    }
-
-    .footer-date {
-      font-family: 'EB Garamond', serif;
-      font-size: 0.8rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-
-    /* ── Responsive ── */
-    @media (max-width: 520px) {
-      html { font-size: 16px; }
-      main { padding: 6rem 1.4rem 8rem; }
-      h1 { font-size: 2rem; }
-      #theme-toggle { top: 1.4rem; left: 1.2rem; }
+    @media (max-width: 540px) {
+      html { font-size: 15px; }
+      main { padding: 3.5rem 1.3rem 8rem; }
+      h1 { font-size: 1.8rem; }
+      #topbar { padding: 0.6rem 1.1rem; gap: 0.8rem; }
+      .search-wrap { max-width: none; }
+      .glossary-modal { padding: 1.2rem 1.1rem 2rem; border-radius: 10px 10px 0 0; }
     }
   </style>
 </head>
 <body>
 
-  <button id="theme-toggle" aria-label="تبديل المظهر">
-    <!-- Moon icon (shown in light mode) -->
-    <svg id="icon-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-    </svg>
-    <!-- Sun icon (shown in dark mode, hidden initially) -->
-    <svg id="icon-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display:none;">
-      <circle cx="12" cy="12" r="5"/>
-      <line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      <line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      <line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      <line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    </svg>
-  </button>
+  <div id="topbar">
+    <div class="toggle-wrap" onclick="toggleDark()">
+      <span class="toggle-label">الوضع الليلي</span>
+      <div class="toggle-track" id="toggle-track">
+        <div class="toggle-thumb"></div>
+      </div>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="search-input" placeholder="ابحث هنا .." autocomplete="off" />
+      <div id="search-count"></div>
+    </div>
+    <button class="gloss-btn" id="gloss-btn" onclick="toggleGlossary()">
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <span>المصطلحات</span>
+    </button>
+  </div>
+
+  <div class="glossary-overlay" id="glossary-overlay" onclick="handleOverlayClick(event)">
+    <div class="glossary-modal" id="glossary-modal">
+      <div class="glossary-modal-header">
+        <span class="glossary-modal-title">المصطلحات</span>
+        <button class="gloss-close" onclick="closeGlossary()" aria-label="إغلاق">✕</button>
+      </div>
+      <div class="glossary-grid">
+        <div class="glossary-row">
+          <span class="g-abbr">TPS</span>
+          <span class="g-def">القطاع الخاص العابر للحدود <span class="g-en">Transnational Private Sector</span></span>
+        </div>
+        <div class="glossary-row">
+          <span class="g-abbr">FIC</span>
+          <span class="g-def">الجناح المالي <span class="g-en">Financial-Industrial Complex</span></span>
+        </div>
+        <div class="glossary-row">
+          <span class="g-abbr">MIC</span>
+          <span class="g-def">الجناح العسكري <span class="g-en">Military-Industrial Complex</span></span>
+        </div>
+        <div class="glossary-row">
+          <span class="g-abbr">CIC</span>
+          <span class="g-def">الجناح الاستهلاكي <span class="g-en">Consumer-Industrial Complex</span></span>
+        </div>
+        <div class="glossary-row">
+          <span class="g-abbr">TIC</span>
+          <span class="g-def">الجناح التقني <span class="g-en">Technology-Industrial Complex</span></span>
+        </div>
+        <div class="glossary-row">
+          <span class="g-abbr">BRICS</span>
+          <span class="g-def">تكتل الاقتصادات الناشئة الكبرى <span class="g-en">Brazil, Russia, India, China, South Africa</span></span>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <main>
 
@@ -249,208 +351,262 @@
       <p class="date">مارس ٢٠٢٦</p>
     </header>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
-      <h2>السؤال الخاطئ</h2>
-      <p>الجميع يسأل: من سيربح؟</p>
-      <p>هذا السؤال يفترض حربًا بالمعنى التقليدي. ضربات تُوجَّه لتحقيق نصر، خسائر تُقاس بالأرض والأرواح، طرف يركع في النهاية.</p>
-      <p>ما يجري في الشرق الأوسط منذ أكتوبر ٢٠٢٣ يعمل بمنطق مختلف. الضربات حقيقية. الدماء حقيقية. الهدف منها إدارة انتقال منظومة، لا حسم عسكري.</p>
-      <p>السؤال الصحيح: من يبني النظام الذي سيأتي بعد أن تهدأ الصواريخ؟</p>
+      <p>منذ أكتوبر ٢٠٢٣، والشرق الأوسط يتحرك بسرعة لا تلحق بها التحليلات المعتادة. كل يوم حدث، وكل حدث تفسير، وأغلب التفسيرات تقرأ ما يحدث كحرب بالمعنى التقليدي: طرف يهاجم، وطرف يدافع، وفي النهاية أحدهم يربح.</p>
+      <p>هذا النص يقترح إطاراً مختلفاً.</p>
+      <p>ليس لأن الضربات غير حقيقية، أو الدماء أقل مما تبدو. بل لأن الحرب أحياناً تكون الشكل، وليست المضمون. والمضمون هنا سؤال واحد: من يبني النظام الذي سيأتي بعد أن تصمت الصواريخ؟</p>
+      <p>للإجابة على هذا السؤال، النص يعرّف أربعة لاعبين رئيسيين، ويشرح كيف تقاطعت مصالحهم لتنتج ما نراه اليوم. اللاعبون ليسوا فقط الدول التي نعرفها، إيران وإسرائيل والخليج وأمريكا، بل هناك طرف رابع يتحرك فوق الحدود ويفكر بمنطق السوق لا منطق الأيديولوجيا.</p>
+      <p>النص ليس خبراً، وليس تنبؤاً. هو قراءة تتبع المصالح والحوافز، وتترك للقارئ حرية الحكم.</p>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
       <h2>القطاع الخاص العابر للحدود</h2>
-      <p>أمريكا التي يعرفها العالم، منارة الديمقراطية وحامية القانون الدولي، هي الواجهة. ما خلفها مختلف.</p>
-      <p>نشأ على مر العقود كيان يتجاوز الدول ويتحرك فوق حدودها. يُعرف بالـ TPS، القطاع الخاص العابر للحدود. ائتلاف من الشركات العملاقة تعمل بمنطق الربح دون أي التزام بمجتمع أو شعب.</p>
-      <p>يتكون من أربعة أجنحة:</p>
-      <p><strong>الجناح المالي (FIC):</strong> البنوك وصناديق الاستثمار الكبرى — JPMorgan، Goldman Sachs، BlackRock. يجلس في قمة البنية ويحرك بقية الأجنحة.</p>
-      <p><strong>الجناح العسكري (MIC):</strong> شركات السلاح كـ Lockheed وRaytheon. يربح من الحروب الطويلة وعقود التسليح.</p>
-      <p><strong>الجناح الاستهلاكي (CIC):</strong> من Walmart إلى Pfizer. السيطرة على السلع والخدمات اليومية عالميًا.</p>
-      <p><strong>الجناح التقني (TIC):</strong> Apple، Amazon، Microsoft، Nvidia. يملك البنية الرقمية التي يعيش عليها العالم.</p>
+      <p>على مدى عقود، نشأ كيان يتجاوز الدول ويتحرك فوق حدودها. يُعرف بالقطاع الخاص العابر للحدود (TPS): ائتلاف من الشركات العملاقة تعمل بمنطق الربح، دون التزام بمجتمع أو شعب. لا مقر ثابت، لا جنسية، لا ناخبون يحاسبونه.</p>
+      <p>يتكون من أربعة أجنحة متشابكة:</p>
+      <p><strong>الجناح المالي (FIC):</strong> البنوك وصناديق الاستثمار الكبرى كـ JPMorgan وGoldman Sachs وBlackRock. يجلس في قمة البنية لأنه يموّل بقية الأجنحة ويملك حصصًا فيها جميعًا.</p>
+      <p><strong>الجناح العسكري (MIC):</strong> شركات الدفاع كـ Lockheed وRaytheon وBoeing Defense. يربح من الحروب الطويلة وعقود التسليح. مصلحته في التوتر المُدار.</p>
+      <p><strong>الجناح الاستهلاكي (CIC):</strong> من Walmart إلى Pfizer وNestlé. يسيطر على السلع والخدمات اليومية عالميًا، ويعتمد على الاستقرار لأن الحروب ترفع التكاليف وتكسر الأسواق.</p>
+      <p><strong>الجناح التقني (TIC):</strong> Apple وMicrosoft وNvidia وMeta وAlphabet. يملك البنية الرقمية التي يعيش عليها العالم: السحابة، الاتصالات، الذكاء الاصطناعي، البيانات.</p>
       <blockquote>
-        <p>الولايات المتحدة في هذا الإطار منصة تخدم هذه البنية. ليست دولة تقود، بل أداة تُوجَّه. والمواطن الأمريكي العادي يدفع الفاتورة.</p>
+        <p>الولايات المتحدة في هذا الإطار منصة تخدم هذه البنية. والمواطن الأمريكي العادي يدفع الفاتورة.</p>
       </blockquote>
-      <p>الـ TPS يدين بالولاء لحاملي الأسهم فقط. القرار فيه يُقاس بالعائد، لا بالشرعية أو المصلحة العامة.</p>
+      <p>TPS يدين بالولاء لحاملي الأسهم فقط. القرار فيه يُقاس بالعائد. الحكومات تأتي وتذهب؛ هذه البنية تبقى.</p>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
-      <h2> لعبتان في ساحة واحدة</h2>
-      <p>الدول تلعب على المدى البعيد. هدفها البقاء والاستمرار عبر الأجيال. مبادرة الحزام والطريق الصينية مثال: استثمار تريليون دولار على عقود، لأن الصين تفكر بأفق لا نهاية له. BRICS بُني على المنطق ذاته: تعاون طويل الأمد لأن البقاء يتطلب الشراكة.</p>
-      <p>الـ TPS يلعب على المدى القصير. أرباح فصلية، أهداف محددة، فائز وخاسر في كل جولة. الحرب مربحة؟ يموّلها. السلام أعلى عائدًا؟ ينتقل إليه. لا رابطة بالمدى البعيد.</p>
+      <h2>لعبتان في ساحة واحدة</h2>
+      <p>الدول تلعب على المدى البعيد. هدفها البقاء والاستمرار عبر الأجيال. مبادرة الحزام والطريق الصينية استثمار تريليون دولار على عقود، لأن الصين تفكر بأفق لا نهاية له. BRICS بُني على المنطق ذاته.</p>
+      <p>TPS يلعب على المدى القصير. أرباح فصلية، فائز وخاسر في كل جولة. الحرب مربحة؟ يموّلها. السلام أعلى عائدًا؟ ينتقل إليه.</p>
       <blockquote>
-        <p>حين يدخل لاعب بقواعد اللعبة القصيرة إلى ساحة اللعبة الطويلة، تنقلب اللوحة. هذا ما فعله الـ TPS في الشرق الأوسط لأكثر من مئة عام.</p>
+        <p>حين يدخل لاعب بقواعد اللعبة القصيرة إلى ساحة اللعبة الطويلة، تنقلب اللوحة. هذا ما فعله TPS في الشرق الأوسط لأكثر من مئة سنة.</p>
       </blockquote>
-      <p>الدول ترفض هذا الخلل لأنه يهدد بقاءها. BRICS نفسه تحالف دول تريد استعادة ساحتها من منطق الشركات.</p>
-      <p>الشرق الأوسط وصل إلى نقطة حرجة. رهانات الطاقة والممرات التجارية والاستقرار أصبحت أكبر من أن تُترك للـ MIC. القرار الإقليمي صار إعادة ضبط اللوحة.</p>
+      <p>الدول ترفض هذا الخلل لأنه يهدد بقاءها. BRICS نفسه تحالف دول تريد استعادة ساحتها من منطق الشركات. وصعوده، جنبًا إلى جنب مع التقارب الإقليمي، أجبر الخليج وإيران على الاصطفاف، وهذا بدوره أجبر TPS على التكيف.</p>
+      <p>رهانات الطاقة والممرات التجارية والاستقرار أصبحت أكبر من أن تُترك للـ MIC. القرار الإقليمي صار إعادة ضبط اللوحة.</p>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
-      <h2> اللاعبون الأربعة</h2>
+      <h2>اللاعبون الأربعة</h2>
       <p>قبل أكتوبر ٢٠٢٣، أربعة أطراف تُحرك المنطقة، كل منها يتبع حسابه الخاص.</p>
 
       <p class="sub-heading">إيران</p>
-      <p>أولوياتها كانت ثلاثية: بقاء النظام، رفع العقوبات، توسيع النفوذ عبر شبكة أذرع مسلحة في لبنان والعراق واليمن وفلسطين. الطموح النووي ورقة ضغط احتياطية. هذه المنظومة كلها أصبحت تكلف أكثر مما تعطي: عقوبات خانقة، عزلة متصاعدة، وأذرع تجلب الضربات أكثر مما تجلب النفوذ.</p>
+      <p>ثلاثة أهداف: بقاء النظام، رفع العقوبات، توسيع النفوذ عبر شبكة الأذرع المسلحة في لبنان والعراق واليمن وفلسطين. هذه المنظومة كلها أصبحت تكلف أكثر مما تعطي. عقوبات خانقة، عزلة متصاعدة، واقتصاد يقترب معدل تضخمه من ٦٠٪.</p>
 
       <p class="sub-heading">إسرائيل</p>
-      <p>بنت مشروعيتها الداخلية على معادلة: التهديد الإيراني يضمن الدعم الأمريكي، والدعم الأمريكي يغطي التوسع. حكومة نتنياهو أرادت المضي بهذه المعادلة حتى نهايتها: التهجير الكامل وضم غزة. فشلت.</p>
+      <p>بنت مشروعيتها الداخلية على معادلة واحدة: التهديد الإيراني يضمن الدعم الأمريكي، والدعم الأمريكي يغطي التوسع. حكومة نتنياهو أرادت المضي بهذه المعادلة حتى نهايتها. فشلت.</p>
 
       <p class="sub-heading">الخليج</p>
-      <p>السعودية وشركاؤها يلعبون لعبة طويلة. استقرار سوق الطاقة، نفوذ إقليمي يتناسب مع ثقلهم المالي المتصاعد، وتموضع في عالم متعدد الأقطاب دون انحياز كامل لأي طرف. صعود BRICS فتح أمامهم خيارات لم تكن متاحة.</p>
+      <p>السعودية وشركاؤها يلعبون لعبة طويلة. استقرار سوق الطاقة، نفوذ إقليمي يتناسب مع ثقلهم المالي، وتموضع في عالم متعدد الأقطاب دون انحياز كامل لأي طرف. صعود BRICS فتح خيارات لم تكن متاحة.</p>
 
-      <p class="sub-heading">الـ TPS</p>
-      <p>ما بعد الحرب العالمية الثانية كان الـ MIC يقود. كل حرب، كل عقد سلاح، يصب في خزينة تجار الأسلحة. الحروب الطويلة في العراق وأفغانستان استنزفت الولايات المتحدة كمنصة. الـ FIC رأى ما غاب عن الـ MIC: أرباح الإعمار والاستثمار في المناطق المستقرة أضخم وأطول عمرًا.</p>
+      <p class="sub-heading">TPS</p>
+      <p>ما بعد الحرب العالمية الثانية كان الـ MIC يقود. كل حرب وكل عقد سلاح يصب في خزينة تجار الأسلحة. الحروب الطويلة في العراق وأفغانستان استنزفت الولايات المتحدة كمنصة. الـ FIC رأى ما غاب عن الـ MIC: أرباح الإعمار والاستثمار في المناطق المستقرة أضخم وأطول عمرًا.</p>
+      <p>هذا التحول لم يكن إعلاناً، كان أرقاماً. التقارير السنوية لـ Raytheon وLockheed منذ ٢٠٢٣ تُظهر تحويلاً واضحاً في تراكم العقود نحو أوروبا وآسيا. الشرق الأوسط خرج من أولوياتهم قبل أن تبدأ أي ضربة.</p>
       <blockquote>
-        <p>الـ FIC انتزع قيادة الـ TPS من الـ MIC. الاستقرار أكثر ربحية من الحرب. هذا التحول يفسر كل ما جاء بعده.</p>
+        <p>الـ FIC انتزع قيادة TPS من الـ MIC. الاستقرار أصبح أكثر ربحية من الحرب. هذا التحول يفسر كل ما جاء بعده.</p>
       </blockquote>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
       <h2>ثلاثية الـ FIC</h2>
-      <p>حين أمسك الـ FIC بقيادة الـ TPS، شرع في تنفيذ ثلاث حركات متزامنة:</p>
-      <p><strong>الدمج الداخلي:</strong> الشركات الصغيرة التي أنهكتها التعريفات الجمركية تُشترى بأسعار متدنية وتُضم إلى منظومة الـ TPS. السوق يتركّز في يد أقل.</p>
-      <p><strong>التبعية:</strong> الدول المثقلة بالديون تحصل على قروض واستثمارات مشروطة تحوّلها إلى محطات خدمة. السيادة تتآكل ببطء.</p>
-      <p><strong>الاصطفاف مع BRICS:</strong> الـ TPS لا يقاوم النظام الجديد، بل يخترقه. استثمارات في اقتصادات BRICS، شراكات خليجية، حضور في كل الأنظمة في وقت واحد.</p>
-      <p>الـ FIC يهدد بـ MIC ليحسّن شروطه في التفاوض، ثم يتفاهم مع الجميع. الوفاء والخيانة أدوات يستخدمها حسب الحاجة.</p>
+      <p>حين أمسك الـ FIC بقيادة TPS، شرع في تنفيذ ثلاث حركات متزامنة:</p>
+      <p><strong>الدمج الداخلي:</strong> الشركات الصغيرة التي أنهكتها التعريفات الجمركية تُشترى بأسعار متدنية وتُضم إلى منظومة TPS. السوق يتركّز في يد أقل.</p>
+      <p><strong>التبعية:</strong> الدول المثقلة بالديون تحصل على قروض مشروطة تحوّلها إلى محطات خدمة. السيادة تتآكل ببطء، والسلاح هنا سندات لا صواريخ.</p>
+      <p><strong>الاصطفاف مع BRICS:</strong> TPS لا يقاوم النظام الجديد، بل يخترقه. استثمارات في اقتصادات BRICS، شراكات خليجية، حضور في كل الأنظمة في وقت واحد.</p>
+      <p>الـ FIC يهدد بالـ MIC ليحسّن شروطه في التفاوض، ثم يتفاهم مع الجميع. الوفاء والخيانة أدوات يستخدمها حسب الحاجة.</p>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
-      <h2> الصفقة السعودية-الإيرانية ٢٠٢٣</h2>
-      <p>عام ٢٠٢٣، برعاية صينية، وقّعت السعودية وإيران اتفاق تطبيع. أغلب المحللين تعاملوا معه كخبر دبلوماسي. كان أكبر من ذلك بكثير.</p>
+      <h2>الصفقة السعودية-الإيرانية ٢٠٢٣</h2>
+      <p>عام ٢٠٢٣، برعاية صينية، وقّعت السعودية وإيران اتفاق تطبيع. أغلب المحللين تعاملوا معه كخبر دبلوماسي.</p>
+      <p>كان أكبر من ذلك.</p>
       <p>الخليج يعطي إيران منفذًا تجاريًا وإدماجًا اقتصاديًا تدريجيًا ووساطة دولية لرفع العقوبات. إيران تتخلى عن شبكة أذرعها وتسمح لها بالنزف حتى التلاشي.</p>
       <p>خامنئي وافق.</p>
       <blockquote>
         <p>الأذرع المسلحة لم تعد أصولًا استراتيجية في الحساب الإيراني الجديد. باتت أعباء تُفاوَض عليها.</p>
       </blockquote>
-      <p>العائد على كل طرف: إيران تضمن بقاءها وتخرج من العزلة. الخليج يروّض منافسًا تاريخيًا ويعزز سيطرته على سوق الطاقة. الـ FIC يحصل على منطقة قابلة للاستثمار وممرات تجارية مفتوحة.</p>
+      <p>العائد: إيران تضمن بقاءها وتخرج من العزلة. الخليج يروّض منافسًا تاريخيًا ويعزز سيطرته على سوق الطاقة. الـ FIC يحصل على منطقة قابلة للاستثمار وممرات تجارية مفتوحة.</p>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
-      <h2> التفكيك الذاتي</h2>
-      <p>منذ اغتيال قاسم سليماني في ٢٠٢٠، تسارعت وتيرة الانفصال بين الدولة الإيرانية ووكلائها.</p>
-      <p>قيادات المحور تُصفَّى واحدة تلو الأخرى. قيادات حزب الله. قادة في الحرس الثوري. ثم الخامنئي نفسه.</p>
-      <p>الرواية الشائعة أن إسرائيل تنجح في استهداف القيادات الإيرانية. لكن إيران دولة أمنية محترفة. حين تترك قياداتها مكشوفة بهذا الشكل المتواصل، هذا قرار.</p>
+      <h2>التفكيك الذاتي</h2>
+      <p>هذه الحرب ما بدأت في فبراير ٢٠٢٦. بدأت عام ٢٠٢٣ بتفكيك ممنهج لطبقة الردع الإيرانية الخارجية: مخزون حزب الله الصاروخي، قدرة حماس على الحكم، والحاجز السوري.</p>
+      <p>حين دخلت الطيارات الأجواء الإيرانية، كانت إيران قد فقدت درعها الخارجي قبل أن تبدأ الضربة.</p>
+      <p>منذ اغتيال سليماني عام ٢٠٢٠، قيادات المحور تُصفَّى واحدة تلو الأخرى. قيادات حزب الله. قادة في الحرس الثوري. رئيسي.</p>
+      <p>الرواية الشائعة أن إسرائيل تنجح في الاستهداف. لكن دولة صمدت أربعين سنة تحت عقوبات قصوى وأدارت شبكة أذرع في أربع دول في وقت واحد، لا تُكشف قياداتها بالصدفة. حين تتكرر الإصابات بهذا الشكل المتواصل، يمكن قراءة ذلك على أنه قرار لا إهمال.</p>
       <blockquote>
-        <p>إيران سهّلت التخلص من كل عقبة أمام التحول. سليماني. قيادات حزب الله. رئيسي. المتشددون في الحرس الثوري. الخامنئي. كل واحد منهم كان يمثل ثقلًا على الصفقة الكبرى.</p>
+        <p>كل مصفّى كان يمثل ثقلًا على الصفقة الكبرى. الجناح البراغماتي في طهران لا يمكنه تفكيك المشروع النووي ومحور المقاومة بوجود الفيتو العقائدي لقيادات المحور.</p>
       </blockquote>
-      <p>من رأى في هذا هزيمة كان يراقب الشكل. ما جرى فعليًا كان تفكيكًا ذاتيًا مُدارًا. الفرق بين الهزيمة والتخلص الاختياري من عبء أصبح غير قابل للتحمل.</p>
-      <p>من يدير إيران اليوم هم أنفسهم من كانوا في جنيف يعرضون تنازلات نووية دائمة. هذا ليس تزامنًا عرضيًا.</p>
+      <p>من رأى في هذا هزيمة كان يراقب الشكل. الفرق بين الهزيمة والتخلص الاختياري من عبء أصبح غير قابل للتحمل.</p>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
-      <h2> المسرح</h2>
-      <p>إيران وإسرائيل عدوتان. هذا حقيقي. لكنه لا يمنع أن تخدم ردود أفعالهما المتبادلة أهدافًا مشتركة في الوقت ذاته.</p>
-      <p>قارن هذه «الحرب» بأوكرانيا: مئات الآلاف من القتلى، مدن مسوّاة بالأرض، أسواق في فوضى لسنتين.</p>
-      <p>ثم انظر إلى هذه «الحرب»: النفط عند ٧٣ دولارًا يوم إعلانها. اجتماع OPEC+ في الصباح التالي بزيادات عرض معدّة مسبقًا. السعودية محمية كليًا. عُمان، الوسيط، غير ممسوسة. فنزويلا أمّنت نفطها قبل شهرين. عراقجي على شاشة أمريكية يعرض التهدئة ويقول إن خسارة القادة «ليست مشكلة كبيرة».</p>
+      <h2>خامنئي</h2>
+      <p>قبل ٤٨ ساعة من الضربة، أعلن علي شمخاني، كبير مستشاري خامنئي، أن عراقجي يملك "التفويض والسلطة الكافية" لإتمام الصفقة.</p>
+      <p>يعني القرار انتقل من المرشد إلى الدولة قبل أن تسقط أي قنبلة.</p>
+      <p>إيران دولة أمنية بنت منظومة حماية قياداتها على مدى عقود. المرشد الأعلى لا يُكشف موقعه دون قرار بذلك. ما جرى يمكن قراءته على أنه شرط الإغلاق الأخير: أزاحت إيران آخر عقبة أمام التحول، ومنحت النظام الجديد في الوقت ذاته غطاءً رمزياً لا يُشترى. التنازلات تُسوَّق الآن كـ"وفاء لدم الشهيد"، لا اعترافًا بالهزيمة.</p>
+      <p>سليماني. قيادات حزب الله. رئيسي. الخامنئي.</p>
+      <p>الدولة لم تتوقف لحظة.</p>
+      <p>في ٧ مارس، قبل يوم واحد من إعلان مجتبى، ألقى بيزشكيان خطابًا سحب فيه صلاحية إطلاق النار المستقل من الحرس الثوري وأعلن السيطرة المدنية على القوات المسلحة. الحرس الثوري أبدى غضبًا مؤسسيًا علنيًا. هذا الغضب هو الدليل: لو كان لديهم القدرة على وقف الخطاب لوقفوه، ولم يكتفوا بالاحتجاج بعده. الجناح البراغماتي استخدم الحرب لإنجاز ما عجزت عنه السياسة في زمن السلم.</p>
+    </section>
+
+    <hr class="divider" />
+
+    <section>
+      <h2>المسرح</h2>
+      <p>حين يُقال "مسرح" لا يعني ذلك زيفاً. الأحداث حقيقية. الدمار حقيقي. التكلفة البشرية حقيقية. المسرح يعني أن للحرب طبقتين في آنٍ واحد: طبقة كلية من المصالح المتقاطعة والنتائج المتفق عليها، وطبقة ميدانية من الصراع الفعلي وإزالة الهياكل القديمة. حقيقة الدمار لا تتناقض مع تنسيق النتيجة. كلاهما صحيح.</p>
+      <p>إيران وإسرائيل عدوتان. هذا حقيقي. لكن ردود أفعالهما المتبادلة خدمت أهدافًا مشتركة في الوقت ذاته.</p>
+      <p>قارن هذه "الحرب" بأوكرانيا: مئات الآلاف من القتلى، مدن مسوّاة بالأرض، أسواق في فوضى لسنتين.</p>
+      <p>ثم انظر إلى هذه: النفط عند ٧٣ دولارًا يوم إعلانها. اجتماع OPEC+ في الصباح التالي بزيادات عرض معدّة مسبقًا. السعودية محمية كليًا. عُمان، الوسيط، غير ممسوسة. عراقجي على شاشة أمريكية يعرض التهدئة ويقول إن خسارة القادة "ليست مشكلة كبيرة".</p>
       <blockquote>
-        <p>عملية هدم محكوم ألبست زي حرب. عملية نهاية أسبوع لإعادة هيكلة بنية القوة في المنطقة بينما الجميع منشغل بمشاهد الصواريخ.</p>
+        <p>عملية هدم محكوم ألبست زي حرب. إعادة هيكلة بنية القوة في المنطقة بينما الجميع منشغل بمشاهد الصواريخ.</p>
       </blockquote>
 
-      <p class="sub-heading">خامنئي</p>
-      <p>وافق على الصفقة مع الخليج. لكنه يحكم دولة بنى مشروعيتها على خطاب المحور والثورة. قاعدته الصلبة تحتاج مشهدًا. الضربة التي تبدو كردٍّ حازم ترضي هذه القاعدة بينما تسير الترتيبات في الكواليس.</p>
+      <p class="sub-heading">نمط الاستهداف</p>
+      <p>لم يُقصف البرلمان الإيراني. لم يُستهدف مكتب بيزشكيان. لم تُمس مؤسسات الدولة. ما استُهدف بالضبط هو الهيكل القيادي للحرس الثوري، وخامنئي، ومبنى مجلس الخبراء أثناء جلسة خلافة كانت ستُكرّس المسار القديم. هذا ليس استهداف تغيير نظام. هذا استهداف إزاحة فصيل.</p>
+
+      <p class="sub-heading">قطر</p>
+      <p>ضربت إيران منشأة Ras Laffan للغاز الطبيعي المسال. أوقفت QatarEnergy الإنتاج كاملاً وأعلنت القوة القاهرة. أسعار الغاز الأوروبية ارتفعت ٥٢٪.</p>
+      <p>لكن QatarEnergy تملك ٧٠٪ من محطة Golden Pass في تكساس، التي كانت على وشك التشغيل بالضبط في فبراير-مارس ٢٠٢٦. المشتري الأوروبي كان بالفعل مُهيَّأ لاستقبال الغاز الأمريكي. عقود ما قبل الأزمة انتهت بـ"قوة قاهرة". عقود ما بعدها تُكتب بأسعار السوق الجديدة.</p>
+      <p>قطر لم تخسر حصتها السوقية. حوّلت جغرافيا إنتاجها من الخليج الفارسي إلى خليج المكسيك. كل شرط مسبق لهذا التحويل كان جاهزاً قبل أول طائرة مسيّرة.</p>
+      <blockquote>
+        <p>الجهة التي "خسرت" منشأتها تملك ٧٠٪ من المنشأة البديلة التي كانت جاهزة للتشغيل في نفس اللحظة.</p>
+      </blockquote>
 
       <p class="sub-heading">نتنياهو</p>
-      <p>ائتلافه ينهار، القضاء يلاحقه، وهدفه في غزة فشل. ضربة تقدَّم إعلاميًا بأنها حيّدت البرنامج النووي تمنحه مخرجًا بطوليًا. يحتاج إيران أن تردّ. وإيران تحتاج مشهدًا يرضي متشدديها. مصلحتاهما تلتقيان في الأداء.</p>
-      <p>اللاعبان الأكثر قوة، الخليج والـ FIC، يمتلكان سلّم التصعيد ويضبطانه. التنسيق بينهما نابع من ضرورة مشتركة: الصفقة الكبرى يجب أن تنجح.</p>
+      <p>ائتلافه ينهار، القضاء يلاحقه، وهدفه في غزة فشل. ضربة تُقدَّم إعلاميًا بأنها حيّدت البرنامج النووي تمنحه مخرجًا بطوليًا. يحتاج إيران أن تردّ. وإيران تحتاج مشهدًا يرضي متشدديها. مصلحتاهما تلتقيان في الأداء.</p>
+      <p>الخليج والـ FIC يمتلكان سلّم التصعيد ويضبطانه. التنسيق بينهما نابع من ضرورة مشتركة: الصفقة الكبرى يجب أن تنجح.</p>
+      <p class="sub-heading">الضربة الأخيرة</p>
+      <p>على الأرجح ستأتي ضربة واحدة أخيرة على منشأة نووية إيرانية، مصممة لإنتاج مشهد بصري واحد. الهدف الحقيقي منها الصورة، لا الأثر الاستراتيجي. النتيجة الاستراتيجية تحققت بالفعل عبر أسابيع من الضربات الجوية. ما تحتاجه الإدارة الأمريكية الآن هو جملة واحدة يفهمها كل ناخب: "دمرنا البرنامج النووي الإيراني." هذا خروج من الحرب، لا تصعيد. وما إن تُطلق هذه الجملة، يصبح الاستمرار في القتال تناقضًا مع النصر المُعلن. وقف إطلاق النار يتبعها بأيام.</p>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
-      <h2> هرمز</h2>
+      <h2>هرمز</h2>
       <p>في ذروة التوتر، أغلقت إيران مضيق هرمز جزئيًا.</p>
       <p>النفط قفز إلى ١١٩ دولارًا. هذا الرقم كان سؤالًا موجهًا لكل لاعب كبير في الاقتصاد العالمي: كم تساوي التهدئة؟ العالم لا يتحمل هذا السعر أسابيع. الرسالة وصلت.</p>
       <p>التهدئة بدأت. النفط هبط.</p>
       <blockquote>
-        <p>هرمز في هذه اللحظة كان لغة تفاوض مالية. من يهدده يخاطب السوق العالمية والدول الصناعية وشبكات رأس المال الكبرى كلها في آنٍ واحد.</p>
+        <p>هرمز لغة تفاوض مالية. من يهدده يخاطب السوق العالمية والدول الصناعية وشبكات رأس المال في آنٍ واحد.</p>
       </blockquote>
-      <p>هذه الأداة استُخدمت مرة واحدة في اللحظة الصحيحة. أدّت وظيفتها: تسريع التسوية.</p>
+      <p>هرمز أيضًا ورقة ضمان: أي اتفاق لن يتماسك دون أن يُفتح المضيق كليًا. إيران تعرف هذا. وكل من على طاولة التفاوض يعرف أنها تعرف.</p>
+      <p>سعر النفط عند ٨٩ دولارًا يقول هذا بدقة. رُفض من ١١٩ لأن السوق لا يصدق الانهيار الكامل. لم يعد إلى ٧٠ لأن السوق لا يصدق الحل الكامل. ٨٩ هو سعر أزمة يمكن تحملها لكنها لم تُحسم بعد. من يفهم هذا الرقم يعرف أين نحن على الخريطة.</p>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
-      <h2> الصين في الصورة</h2>
-      <p>حين أطلق ترامب تغريدته الشهيرة عن هرمز، خاطب الصين بالاسم وسمّى الضمان الأمريكي للمضيق «هدية» لها. أغلب من قرأها فهمها كتهديد لإيران.</p>
+      <h2>الصين في الصورة</h2>
+      <p>حين أطلق ترامب تغريدته عن هرمز، خاطب الصين بالاسم وسمّى الضمان الأمريكي للمضيق "هدية" لها. أغلب من قرأها فهمها كتهديد لإيران.</p>
       <p>كانت عرضًا تجاريًا موجهًا لبكين.</p>
-      <p>الصين تستورد نحو ٧٠٪ من نفطها عبر هرمز. ترامب كان يقول: «نحن نضمن طاقتك. هذه هدية. ماذا تقدم مقابلها؟»</p>
+      <p>الصين تستورد نحو ٧٠٪ من نفطها عبر هرمز. ترامب كان يقول: "نحن نضمن طاقتك. هذه هدية. ماذا تقدم مقابلها؟"</p>
       <p>الأوراق المطروحة أمام الصين ثلاث:</p>
-      <p><strong>التعريفات الجمركية:</strong> «نحمي نفطك، التقِ بنا في منتصف الطريق على الميزان التجاري.»</p>
+      <p><strong>التعريفات الجمركية:</strong> حماية النفط مقابل تنازلات على الميزان التجاري.</p>
       <p><strong>تايوان:</strong> الأصول العسكرية الأمريكية مركّزة في الخليج. هذه نافذة ضعف حقيقية. الصين تعرف. واشنطن تعرف أن الصين تعرف. الالتزام بعدم التصعيد خلال هذه الفترة له ثمن.</p>
-      <p><strong>الاتفاق الإيراني:</strong> أي تسوية تتطلب من الصين وقف تمويل تحايل طهران على العقوبات. الصين كانت طوق نجاة إيران الاقتصادي. إغلاق هذا المنفذ جزء من الترتيب الكبير.</p>
+      <p><strong>الملف الإيراني:</strong> أي تسوية تتطلب من الصين وقف تمويل تحايل طهران على العقوبات. الصين كانت طوق نجاة إيران الاقتصادي. إغلاق هذا المنفذ جزء من الترتيب الكبير.</p>
+      <p>حين أغلق الحرس الثوري هرمز، أول من اتصل مطالبًا بإعادة فتحه لم يكن أمريكا ولا السعودية. كانت الصين. أقوى سلاح في يد الحرس الثوري كان رهينة مصلحة حليفهم قبل أن يكون تهديدًا لعدوهم. هذا ما تعنيه جملة ترامب فعلاً: من يضمن الممر يملك ورقة التفاوض.</p>
       <blockquote>
-        <p>ما بدا صراعًا إقليميًا كان في جوهره إعادة ترتيب للعلاقة الأمريكية-الصينية باستخدام أدوات شرق أوسطية.</p>
+        <p>ما بدا صراعًا إقليميًا يمكن قراءته على أنه إعادة ترتيب للعلاقة الأمريكية-الصينية باستخدام أدوات شرق أوسطية.</p>
       </blockquote>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
-      <h2>١ما تأكد</h2>
-      <p>القراءة كانت سيناريو في ٢٠٢٥. الأحداث التي جاءت بعدها حوّلته إلى توثيق.</p>
+      <h2>القراءة</h2>
 
-      <p class="sub-heading">وفاة خامنئي وتعيين مجتبى</p>
-      <p>المجلس المؤقت تشكّل فورًا: بيزشكيان الإصلاحي، ومحسني للقضاء، وعرافي للأيديولوجيا. ثلاثة كراسٍ، كلها ممتلئة، صفر فراغ. الدولة لم تتوقف لحظة.</p>
-      <p>الخليفة المرتقب مجتبى ينتمي للجناح البراغماتي. السوق أجاب فورًا حين أُعلن عنه: النفط هبط من ١١٩ إلى ٨٧ دولارًا. السوق يقرأ المخاطر. حين عرف من سيدير إيران، قرر أن المخاطرة انتهت.</p>
+      <p class="sub-heading">المجلس المؤقت</p>
+      <p>تشكّل فورًا بعد خامنئي: بيزشكيان الإصلاحي، ومحسني للقضاء، وعرافي للأيديولوجيا. ثلاثة كراسٍ، كلها ممتلئة، صفر فراغ. الدولة لم تتوقف لحظة. الخليفة المرتقب مجتبى ينتمي للجناح البراغماتي.</p>
+      <p>السوق أجاب فورًا: النفط هبط من ١١٩ إلى ٨٧ دولارًا حين أُعلن عنه. حين عرف السوق من سيدير إيران، رجّح أن المخاطرة انتهت.</p>
 
       <p class="sub-heading">اعتذار بيزشكيان</p>
-      <p>ضمانة علنية موجهة للعالم. إيران الجديدة تعتذر وتدخل في منطق الدولة الطبيعية. الاتفاقيات ستُحترم.</p>
+      <p>ضمانة علنية للعالم. إيران الجديدة تعتذر وتدخل في منطق الدولة الطبيعية. الاتفاقيات ستُحترم.</p>
 
-      <p class="sub-heading">ترامب: «الحرب اكتملت»</p>
-      <p>جملة واحدة أعلنت نجاح الصفقة. ترامب رجل عقارات قبل أن يكون سياسيًا. «اكتملت» تعني: الشروط اتُّفق عليها، الملف أُغلق، المرحلة التالية تبدأ.</p>
+      <p class="sub-heading">ترامب: "الحرب اكتملت"</p>
+      <p>ترامب رجل عقارات قبل أن يكون سياسيًا. "اكتملت" تعني: الشروط اتُّفق عليها، الملف أُغلق، المرحلة التالية تبدأ.</p>
       <p>الصواريخ كانت تطير. العقود كانت تُوقَّع.</p>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
+
+    <section>
+      <h2>وقف إطلاق النار القادم</h2>
+      <p>وقف إطلاق النار الجاي يُرجَّح أنه إخراج فني يُثبّت مجتبى كواقع جديد يتفاهم معه الجميع.</p>
+      <p>هرمز لا يزال الجوكر بيد إيران. ضمان أن أي اتفاق يُخرجها بكرامة ومن موقع قوة. كل طرف على طاولة التفاوض يعرف هذا.</p>
+      <p>الجناح المتشدد في الحرس الثوري لم يستسلم بالكامل. جولات استنزاف محتملة قبل أن يُغلق الباب كليًا. هذا يؤخر توقيت النهاية المتفق عليها، لكنه لن يغير مسارها.</p>
+      <p>كل لاعب رئيسي — أمريكا، إيران، إسرائيل، الخليج، الصين — استراتيجيته المهيمنة تؤدي لنفس النقطة: وقف إطلاق النار. ليس لأن أحداً يريد السلام بالمعنى المثالي، بل لأن تكلفة الاستمرار تتجاوز العائد لكل طرف.</p>
+      <blockquote>
+        <p>البديل لو فشلت كل هذه الترتيبات: تفعيل كامل لكل الأذرع المتبقية على كل الجبهات في وقت واحد. هذا السيناريو يقود لنتيجة واحدة: فوضى تحرق كل الاستثمارات. لا أحد يريدها، بما فيهم من يرفعون شعاراتها.</p>
+      </blockquote>
+    </section>
+
+    <hr class="divider" />
+
+    <section>
+      <h2>إسرائيل كأداة</h2>
+      <p>ضرب البرنامج النووي وتفكيك قيادة الحرس الثوري عمليتان لا تستطيع أمريكا تنفيذهما مباشرة دون تكلفة دبلوماسية عالية، والخليج لا يستطيع الاعتراف بهما علناً دون تكلفة شعبية أعلى. إسرائيل نفّذت الشغل الذي احتاجه الجميع وتبرّأ منه الجميع.</p>
+      <p>هذا هو الدور. وبانتهائه، انتهى المبرر الاستراتيجي للوضع الاستثنائي الذي منحته إياه واشنطن عقوداً. كل دولة شاهدت عاصمة تُقصف أثناء مفاوضات نووية نشطة ستُعيد حساباتها مع من يكون شريكها الأول في العقد القادم.</p>
+      <blockquote>
+        <p>المنطقة الجديدة تحتاج لاعباً اقتصادياً. دور المقاول العسكري انتهى بانتهاء عصر المقاولات العسكرية.</p>
+      </blockquote>
+    </section>
+
+    <hr class="divider" />
 
     <section>
       <h2>الشكل الجديد للمنطقة</h2>
 
       <p class="sub-heading">إيران</p>
-      <p>دولة فارسية تدير مصالحها. الخطاب الثوري يتراجع، الحرس الثوري يعاد هيكلته، الجناح الدبلوماسي يتقدم. عقوبات مرفوعة تدريجيًا، ونفط إيراني يعود للأسواق العالمية.</p>
+      <p>دولة فارسية تدير مصالحها. الخطاب الثوري يتراجع، الحرس الثوري يعاد هيكلته، الجناح الدبلوماسي يتقدم. نفط إيراني يعود للأسواق ويمول الانتقال الداخلي.</p>
 
       <p class="sub-heading">إسرائيل</p>
-      <p>إسرائيل التي عاشت على التهديد الإيراني لتبرير وضعها الاستثنائي وجدت أن هذا المبرر أُزيل. الحكومة التي ستخلف نتنياهو ستواجه واقعًا مختلفًا: دعم أمريكي مشروط وضغط للاندماج في الترتيبات الإقليمية الجديدة.</p>
+      <p>وجدت أن المبرر الاستراتيجي لوضعها الاستثنائي أُزيل. الحكومة القادمة بعد نتنياهو ستواجه واقعًا مختلفًا: دعم أمريكي مشروط، وضغط للاندماج في الترتيبات الإقليمية الجديدة. دورها كمقاول عسكري انتهى. المنطقة الجديدة تحتاج لاعبًا اقتصاديًا.</p>
 
       <p class="sub-heading">الخليج</p>
-      <p>تحوّل من مموّل صامت تحت المظلة الأمريكية إلى مهندس إقليمي يرسم قواعد اللعبة. IMEC، شراكات الطاقة، مراكز التمويل، كلها تمر عبر الأجندة الخليجية. رؤية ٢٠٣٠ السعودية تحتاج منطقة مستقرة، وهذه المنطقة صارت متاحة.</p>
-
-      <p class="sub-heading">فلسطين</p>
-      <p>مشروع «فلسطين الناشئة» تخططه شركات استشارية كبرى وتموله صناديق استثمار ضخمة. البقاء على الأرض وإعادة البناء في ظل نظام تبعية. لا يختلف كثيرًا عما تواجهه أغلب دول العالم الصغيرة في هذا النظام.</p>
+      <p>تحوّل من مموّل صامت إلى مهندس إقليمي. IMEC، شراكات الطاقة، مراكز التمويل، كلها تمر عبر الأجندة الخليجية. رؤية ٢٠٣٠ تحتاج منطقة مستقرة. هذه المنطقة صارت متاحة.</p>
+      <p>الخليج تحمّل ضربات الحرس الثوري على أراضيه بحساب مدروس. كان يعرف مسبقًا أن الحرس الثوري سيردّ على كل من في متناوله حين تبدأ الضربات الأمريكية. سمح بذلك لأن هذه الضربات منحته المبرر العلني الذي أراده منذ زمن: "كنا نُضرب والقواعد الأمريكية بيننا لم تحمنا. نحتاج منظومة أمن مختلفة." هذه الجملة أصبحت الآن الموقف الرسمي المُعلن لدبلوماسيي الخليج.</p>
+      <p>بين ٢ و٩ مارس، أسوأ أسبوع ضربات في تاريخ الإمارات، سجّلت دبي ٣٥٧٠ معاملة عقارية بقيمة ٣.٢٤ مليار دولار. المشترون لم يكونوا أفراداً يشاهدون CNN. كانوا رأس مال مؤسسي وصناديق سيادية تشتري بخصم ٢٠٪ لأنها تعرف ما لا يعرفه الفارّون: هذا الصراع له تاريخ انتهاء، وحين ينتهي، الأصل الذي اشتروه بالخصم يُعاد تسعيره في مدينة تتمركز في قلب شرق أوسط طبيعي.</p>
+      <blockquote>
+        <p>دبي تحترق على أطرافها وتُشترى في مركزها.</p>
+      </blockquote>
 
       <p class="sub-heading">أمريكا</p>
-      <p>الهدف إغلاق ملف الشرق الأوسط العسكري والتفرغ للمواجهة مع الصين. ضمان أمن الممرات تحوّل من التزام أوتوماتيكي إلى خدمة مدفوعة.</p>
-
+      <p>الهدف إغلاق ملف الشرق الأوسط العسكري والتفرغ للصين. ضمان أمن الممرات تحوّل من التزام أوتوماتيكي إلى خدمة مدفوعة.</p>
     </section>
 
-    <span class="diamond">◆</span>
+    <hr class="divider" />
 
     <section>
-      <h2> الخلاصة</h2>
-      <p>المال لم يتوقف. غيّر اتجاهه فقط.</p>
-      <p>صناعة الدفاع انتقلت من بيع صواريخ إلى بيع عقود إعمار. الخليج ضخّ استثماراته في منطقته. إيران دخلت كشريك طاقة في منظومة إقليمية. وإسرائيل حصلت على صورة نصر.</p>
-      <p>الخاسرون الوحيدون هم من صدّقوا الشعارات: الميليشيات التي قضت تحت عنوان المقاومة، والشعوب التي رهنت مستقبلها على خطاب ثوري كان في كل لحظة يُدار كبيزنس.</p>
       <blockquote>
-        <p>الحرب كانت الإعلان. النظام الجديد هو المنتج.</p>
+        <p>المال مُلتزم. المخططات مرسومة. لجنة التخطيط صوّتت. ما تبقى هو الهدم.</p>
       </blockquote>
-      <p>هذا الإطار قراءة تتبع المصالح والحوافز، لا الأيديولوجيا والخطابات. الأمور يمكن أن تخرج عن السيطرة في أي لحظة. لكن من يقرأ الأنماط لا الأخبار يرى صورة لا تظهر على شاشات التلفزيون.</p>
     </section>
 
-    <span class="diamond">◆ ◆ ◆</span>
+    <hr class="divider" />
+
+    <section>
+      <h2>خاتمة</h2>
+      <p>ما ظهر على مسرح الحرب لم يكن صراعًا تقليديًا على البقاء بقدر ما كان مرحلة عنيفة من إعادة ترتيب المنطقة.</p>
+      <p>فصل البارود لم ينته تمامًا، لكنه لم يعد وحده ما يحكم المشهد. الذي يتقدم الآن منطق آخر: الطاقة، والممرات، والاستثمار، وإعادة تعريف من يملك حق ضبط الاستقرار وفرض شكله.</p>
+      <p>الحرب كانت تمهيدًا لمرحلة أبرد وأكثر حسابًا. مرحلة يتراجع فيها وزن السلاح المفتوح لمصلحة المال، وتتحول فيها بعض القوى من دور التعبئة والصدام إلى دور التموضع داخل نظام جديد.</p>
+      <p>هذا النظام لن يكون أكثر عدلًا. لكنه سيكون أكثر ارتباطًا بالعقود، والمشاريع، والربط الإقليمي، وأقل اعتمادًا على الفوضى التي حكمت المنطقة طويلًا.</p>
+      <p>الشرق الأوسط يدخل زمنًا مختلفًا: زمن الاستقرار المدار. ليس نهاية الصراع، بل نهاية صيغته القديمة.</p>
+    </section>
 
     <footer>
       <span class="byline">Compiled and Adapted by Mohammed Al-Otaibi</span>
@@ -460,16 +616,93 @@
   </main>
 
   <script>
-    const toggle = document.getElementById('theme-toggle');
-    const iconMoon = document.getElementById('icon-moon');
-    const iconSun = document.getElementById('icon-sun');
     let dark = false;
-
-    toggle.addEventListener('click', () => {
+    function toggleDark() {
       dark = !dark;
       document.body.classList.toggle('dark', dark);
-      iconMoon.style.display = dark ? 'none' : 'block';
-      iconSun.style.display = dark ? 'block' : 'none';
+      document.getElementById('toggle-track').classList.toggle('on', dark);
+    }
+
+    function toggleGlossary() {
+      const overlay = document.getElementById('glossary-overlay');
+      const btn     = document.getElementById('gloss-btn');
+      const isOpen  = overlay.classList.toggle('open');
+      btn.classList.toggle('active', isOpen);
+      if (isOpen) document.body.style.overflow = 'hidden';
+      else        document.body.style.overflow = '';
+    }
+
+    function closeGlossary() {
+      document.getElementById('glossary-overlay').classList.remove('open');
+      document.getElementById('gloss-btn').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function handleOverlayClick(e) {
+      if (e.target === document.getElementById('glossary-overlay')) closeGlossary();
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeGlossary(); });
+
+    const input   = document.getElementById('search-input');
+    const countEl = document.getElementById('search-count');
+    let hits = [], cur = 0, timer;
+    const mainEl = document.querySelector('main');
+
+    let originalHTML = '';
+    window.addEventListener('DOMContentLoaded', () => { originalHTML = mainEl.innerHTML; });
+    if (document.readyState !== 'loading') originalHTML = mainEl.innerHTML;
+
+    function clearHL() {
+      mainEl.innerHTML = originalHTML;
+      hits = []; cur = 0; countEl.textContent = '';
+    }
+
+    function doSearch(q) {
+      clearHL();
+      if (!q.trim()) return;
+      const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+      const walker = document.createTreeWalker(mainEl, NodeFilter.SHOW_TEXT);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+
+      nodes.forEach(node => {
+        const text = node.textContent;
+        re.lastIndex = 0;
+        if (!re.test(text)) return;
+        re.lastIndex = 0;
+        const frag = document.createDocumentFragment();
+        let last = 0, m;
+        while ((m = re.exec(text)) !== null) {
+          if (m.index > last) frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+          const mark = document.createElement('mark');
+          mark.className = 'search-hit';
+          mark.textContent = m[0];
+          frag.appendChild(mark);
+          hits.push(mark);
+          last = re.lastIndex;
+        }
+        if (last < text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+        node.parentNode.replaceChild(frag, node);
+      });
+
+      if (hits.length) {
+        hits[0].classList.add('current');
+        hits[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        countEl.textContent = `١ من ${hits.length}`;
+      } else {
+        countEl.textContent = 'لا نتائج';
+      }
+    }
+
+    input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(() => doSearch(input.value), 280); });
+    input.addEventListener('keydown', e => {
+      if (e.key !== 'Enter' || !hits.length) return;
+      hits[cur].classList.remove('current');
+      cur = (cur + 1) % hits.length;
+      hits[cur].classList.add('current');
+      hits[cur].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      countEl.textContent = `${cur + 1} من ${hits.length}`;
     });
   </script>
 </body>
